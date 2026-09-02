@@ -1,0 +1,40 @@
+Aplicación web desarrollada con Google Apps Script, que simula el sistema de gestión de ventas de una empresa de alimentos. Permite visualizar, agregar e importar datos de productos a través de una interfaz web conectada a Google Sheets y una base de datos MySQL.
+Este repositorio es un proyecto individual, elaborado y publicado para compartirlo como referencia con compañeros de clase.
+
+📋 Descripción
+El proyecto consiste en un sitio web que permite:
+Visualizar un reporte de ventas en formato de tabla.
+Ver un gráfico de pastel (pie chart) con las ventas por categoría.
+Agregar nuevos registros de ventas manualmente mediante un formulario.
+Importar datos masivamente desde un archivo CSV.
+Importar datos desde otra hoja de cálculo de Google Sheets mediante una URL externa.
+
+Los datos se almacenan simultáneamente en una hoja de Google Sheets y en una base de datos MySQL, permitiendo redundancia y consulta desde distintos orígenes.
+
+🛠️ Tecnologías utilizadas
+Google Apps Script (backend, Code.gs)
+HTML / CSS / JavaScript (frontend, index.html)
+Google Sheets API (almacenamiento principal)
+Google Charts (visualización de datos)
+MySQL (JDBC) (base de datos externa)
+
+📂 Estructura del proyecto
+├── Code.gs        # Lógica del servidor: conexión a Sheets y MySQL, funciones CRUD
+└── index.html      # Interfaz de usuario: formularios, tabla y gráfico
+⚙️ Funcionalidades principales
+Función	Descripción
+doGet()	Sirve la página web principal de la aplicación
+getSheetData()	Obtiene los datos actuales de la hoja de cálculo
+updateSheetData()	Agrega nuevas filas a la hoja de cálculo
+importDataFromCsv()	Importa datos desde un archivo CSV subido por el usuario
+importDataFromSheets()	Importa datos desde otra hoja de Google Sheets mediante URL
+insertDataToSheet()	Inserta un registro individual en Google Sheets
+insertDataToDatabase()	Inserta un registro individual en la base de datos MySQL
+
+🚀 Cómo desplegar el proyecto
+Crea un nuevo proyecto en Google Apps Script.
+Copia el contenido de Code.gs y index.html a tu proyecto.
+Vincula el script a una hoja de cálculo de Google Sheets con una pestaña llamada Hoja 1 y las columnas: Nombre del producto, Categoría, Ventas.
+Configura las credenciales de conexión a MySQL como Propiedades del script (Archivo > Propiedades del proyecto > Propiedades del script) en lugar de dejarlas escritas en el código.
+Implementa el proyecto como Aplicación web (Implementar > Nueva implementación > Aplicación web).
+Copia la URL generada para acceder a la aplicación.
