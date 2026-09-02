@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>Grupo de Programación</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f4ff; /* Fondo lila muy claro */
+            color: #333; /* Texto principal */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1, h2, h3 {
+            color: #6a0dad; /* Color primario */
+        }
+        h1 {
+            margin-top: 20px;
+        }
+        .menu {
+            width: 100%;
+            background-color: #9f87ea; /* Color lila suave */
+            overflow: hidden;
+            display: flex;
+            justify-content: center; /* Centrar elementos del menú */
+        }
+        .menu a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .menu a:hover {
+            background-color: #dcd3ff; /* Color lila claro */
+            color: #6a0dad; /* Color primario */
+        }
+        .container {
+            width: 80%;
+            max-width: 1200px; /* Ancho máximo del contenido */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .section {
+            width: 100%;
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: #ffffff; /* Fondo blanco */
+            border-radius: 8px; /* Bordes redondeados */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra */
+        }
+        .small-section {
+            width: 100%;
+            display: flex;
+            justify-content: space-between; /* Distribuir los elementos uniformemente */
+            gap: 20px; /* Espacio mínimo entre contenedores */
+            margin-bottom: 20px; /* Espacio hacia abajo */
+        }
+        .small-section > div {
+            flex: 1; /* Ocupa todo el espacio disponible */
+            padding: 20px;
+            background-color: #ffffff; /* Fondo blanco */
+            border-radius: 8px; /* Bordes redondeados */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra */
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff; /* Fondo de tabla */
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 20px; /* Espacio hacia arriba */
+        }
+        table, th, td {
+            border: 1px solid #ddd; /* Bordes y líneas */
+            transition: background-color 0.3s, color 0.3s;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            color: #333; /* Texto principal */
+        }
+        th {
+            background-color: #9f87ea; /* Color lila suave */
+            color: #fff; /* Texto en encabezado */
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9; /* Fila par de color gris claro */
+        }
+        tr:hover {
+            background-color: #f1e6ff; /* Color lila claro al pasar el ratón */
+            color: #6a0dad; /* Texto en filas al pasar el ratón */
+            cursor: pointer;
+        }
+        .form-container input[type="text"], .form-container input[type="number"], .import-container input[type="text"], .upload-container input[type="file"] {
+            padding: 10px;
+            margin-bottom: 10px;
+            width: 100%;
+            box-sizing: border-box;
+            border: 1px solid #ddd; /* Bordes de los campos */
+            border-radius: 4px; /* Bordes redondeados */
+        }
+        .form-container input[type="submit"], .import-container input[type="submit"], .upload-container input[type="submit"] {
+            background-color: #6a0dad; /* Color primario */
+            color: white; /* Texto en botón */
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 4px; /* Bordes redondeados */
+            transition: background-color 0.3s; /* Transición suave */
+        }
+        .form-container input[type="submit"]:hover, .import-container input[type="submit"]:hover, .upload-container input[type="submit"]:hover {
+            background-color: #4b0082; /* Color primario más oscuro al pasar el ratón */
+        }
+        .footer {
+            width: 100%;
+            background-color: #9f87ea; /* Color lila suave */
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            margin-top: 20px; /* Espacio hacia arriba */
+        }
+
+        .highlight {
+            font-weight: bold; /* Negrita para destacar */
+            color: #6a0dad; /* Color primario */
+        }
+        
+    </style>
+    <!-- Carga de la biblioteca de Google Charts -->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        // Cargar el paquete de gráficos básicos
+        google.charts.load('current', {'packages':['corechart']});
+        // Ejecutar la función drawChart cuando la biblioteca esté lista
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+            // Obtener datos desde el backend y dibujar el gráfico
+            google.script.run.withSuccessHandler(function(data) {
+                console.log("Datos recibidos:", data);
+                if (data.length > 1) {
+                    drawTable(data);
+                    var chartData = google.visualization.arrayToDataTable(data.map(function(row) {
+                        return [row[1], row[2]];
+                    }));
+                    var options = {
+                        title: 'Categorías y Ventas',
+                        fontSize: 14,
+                        chartArea: {width: '100%', height: '80%'},
+                        height: 500,
+                        width: '100%',
+                        colors: ['#6a0dad', '#9f87ea', '#dcd3ff', '#f1e6ff'] /* Colores para el gráfico */
+                    };
+                    var chart = new google.visualization.PieChart(document.getElementById('chart-container'));
+                    chart.draw(chartData, options);
+                    assignTableColors(options.colors);
+                } else {
+                    console.error("No se recibieron datos suficientes para el gráfico.");
+                }
+            }).getSheetData();
+        }
+
+        function assignTableColors(colors) {
+            // Asignar colores a las filas de la tabla
+            var tableRows = document.getElementById('table').getElementsByTagName('tr');
+            for (var i = 1; i < tableRows.length; i++) {
+                tableRows[i].style.backgroundColor = colors[(i - 1) % colors.length];
+            }
+        }
+
+        function drawTable(data) {
+            // Dibujar la tabla con los datos recibidos
+            var tableContainer = document.getElementById('table');
+            var table = '<table>';
+            table += '<tr><th>Nombre del producto</th><th>Categoría</th><th>Ventas</th></tr>';
+            for (var i = 1; i < data.length; i++) {
+                table += '<tr><td>' + data[i][0] + '</td><td>' + data[i][1] + '</td><td>' + data[i][2] + '</td></tr>';
+            }
+            table += '</table>';
+            tableContainer.innerHTML = '<h2>Reportes de Venta</h2>' + table; // Agregar título a la tabla
+        }
+
+        function addData() {
+            // Agregar datos nuevos a la tabla y al gráfico
+            var nombre = document.getElementById('nombre').value.trim();
+            var categoria = document.getElementById('categoria').value.trim();
+            var ventas = parseInt(document.getElementById('ventas').value.trim(), 10);
+
+            var found = false;
+            var tableRows = document.getElementById('table').getElementsByTagName('tr');
+
+            for (var i = 1; i < tableRows.length; i++) {
+                var rowData = tableRows[i].getElementsByTagName('td');
+                if (rowData[1].innerText.trim() === categoria) {
+                    var incremento = parseInt(rowData[2].innerText, 10) + ventas;
+                    rowData[2].innerText = incremento;
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                // Si no se encontró la categoría, inserta una nueva fila
+                var table = document.getElementById('table').getElementsByTagName('tbody')[0];
+                var row = table.insertRow(-1);
+                var cell1 = row.insertCell(0);
+                var cell2 = row.insertCell(1);
+                var cell3 = row.insertCell(2);
+
+                cell1.innerText = nombre;
+                cell2.innerText = categoria;
+                cell3.innerText = ventas;
+            }
+
+            // Actualizar los datos en el backend y refrescar el gráfico
+            google.script.run.withSuccessHandler(function() {
+                document.getElementById('nombre').value = '';
+                document.getElementById('categoria').value = '';
+                document.getElementById('ventas').value = '';
+                drawChart(); // Refrescar gráfico después de actualizar datos
+            }).updateSheetData([[nombre, categoria, ventas]]);
+        }
+
+        function handleUpload(form) {
+            // Manejar la carga de archivos CSV
+            var file = form.fileInput.files[0];
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var contents = event.target.result;
+                processData(contents);
+            };
+            reader.readAsText(file);
+        }
+
+        function processData(csvData) {
+            // Procesar datos CSV
+            var rows = csvData.split(/\r\n|\n/);
+            var newData = rows.map(function(row) {
+                var values = row.split(';');
+                if (values.length === 3) {
+                    return [values[0].trim(), values[1].trim(), parseInt(values[2].trim(), 10)];
+                } else {
+                    console.warn('Ignorando línea de CSV inválida:', row);
+                    return null;
+                }
+            }).filter(function(row) {
+                return row !== null;
+            });
+
+            addDataToTableAndSheet(newData);
+        }
+
+        function addDataToTableAndSheet(newData) {
+            // Agregar datos procesados a la tabla y al gráfico
+            google.script.run.withSuccessHandler(function() {
+                drawChart(); // Refrescar gráfico después de actualizar datos
+                document.getElementById("uploadForm").reset();
+                alert("Datos importados correctamente.");
+            }).importDataFromCsv({ contents: newData.join('\n') });
+        }
+
+        function importData() {
+            // Importar datos desde una URL externa
+            var sourceUrl = document.getElementById('sourceUrl').value.trim();
+            google.script.run.withSuccessHandler(function(response) {
+                drawChart(); // Refrescar gráfico después de importar datos desde URL
+                alert(response); // Mostrar notificación
+            }).importDataFromSheets(sourceUrl);
+        }
+
+        function handleFormSubmit(event) {
+            // Manejar el envío del formulario
+            event.preventDefault();
+
+            var form = document.getElementById("myForm");
+            var nombre = form.nombre.value;
+            var categoria = form.categoria.value;
+            var ventas = form.ventas.value;
+
+            google.script.run.withSuccessHandler(function(response) {
+                form.reset(); // Limpia el formulario después de enviar
+                drawChart(); // Refrescar gráfico después de actualizar datos
+            }).insertDataToSheet(nombre, categoria, ventas);
+
+            google.script.run.withSuccessHandler(function(response) {
+                console.log(response); // Muestra el mensaje de éxito en la consola del navegador
+            }).insertDataToDatabase(nombre, categoria, ventas);
+        }
+    </script>
+</head>
+<body>
+    <h1>Grupo de Programación</h1>
+    <div class="menu">
+        <!-- Menú de navegación -->
+        <a href="#inicio">Inicio</a>
+        <a href="#nosotros">Nosotros</a>
+        <a href="#chart-container">Gráfico</a>
+        <a href="#form-container">Agregar Datos</a>
+        <a href="#upload-container">Subir Datos</a>
+        <a href="#import-container">Fuente Externa</a>
+    </div>
+
+    <div class="container">
+        <div id="inicio" class="section">
+            <h2>Inicio</h2>
+            <p>Bienvenido a nuestro sitio web. Aquí podrás agregar y visualizar datos, además de importar datos desde un archivo CSV o una fuente externa.</p>
+        </div>
+    
+    <div id="nosotros" class="section">
+        <h2>Nosotros</h2>
+        <p>Nuestro grupo está conformado por: <span class="highlight">Anchundia Nathaly</span>, <span class="highlight">Barahona Noemi</span>, <span class="highlight">Lucas Wendy</span> y <span class="highlight">Tomala Noelia</span>. Nosotras te explicaremos paso a paso el contenido de nuestro sitio, el cual es una simulación sobre los datos de una empresa de alimentos.</p>
+        </div>
+
+        <div id="table" class="section">
+            <!-- Contenedor de la tabla de reportes de venta -->
+            <h2>Reportes de Venta</h2>
+            <div id="table-container"></div>
+        </div>
+
+        <div id="chart-container" class="section">
+            <!-- Contenedor del gráfico de pie -->
+            <h2>Gráfico de Pie</h2>
+            <div id="chart" style="width: 100%; height: 500px;"></div>
+        </div>
+
+        <div class="small-section">
+            <div class="form-container" id="form-container">
+                <!-- Formulario para agregar datos -->
+                <h2>Agregar Datos</h2>
+                <form id="myForm" onsubmit="handleFormSubmit(event);">
+                    <input type="text" id="nombre" name="nombre" placeholder="Nombre del producto" required><br>
+                    <input type="text" id="categoria" name="categoria" placeholder="Categoría" required><br>
+                    <input type="number" id="ventas" name="ventas" placeholder="Ventas" required><br>
+                    <input type="submit" value="Agregar">
+                </form>
+            </div>
+
+            <div class="upload-container" id="upload-container">
+                <!-- Formulario para subir archivo CSV -->
+                <h2>Subir Archivo CSV</h2>
+                <form id="uploadForm" onsubmit="event.preventDefault(); handleUpload(this);">
+                    <input type="file" id="fileInput" name="fileInput" accept=".csv">
+                    <input type="submit" value="Subir Archivo">
+                </form>
+            </div>
+
+            <div class="import-container" id="import-container">
+                <!-- Formulario para importar datos desde una fuente externa -->
+                <h2>Fuente Externa</h2>
+                <form id="externo" onsubmit="event.preventDefault(); importData();">
+                    <input type="text" id="sourceUrl" name="sourceUrl" placeholder="URL de la fuente externa" required><br>
+                    <input type="submit" value="Importar Datos">
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <!-- Pie de página -->
+        © 2024 Grupo de Programación. Todos los derechos reservados.
+    </div>
+</body>
+</html>
